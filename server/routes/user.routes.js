@@ -4,78 +4,30 @@ const _ = require("underscore");
 
 const User = require("../models/user.model");
 
-const {
-  verificateToken,
-  verificateAdmin_Role,
-} = require("../middlewares/authentication.middleware");
 const app = express();
 
-// ============================
-// Get Active Users: Only Admin available to get users
-// ============================
-app.get("/user", [verificateToken, verificateAdmin_Role], (req, res) => {
-  let from = req.body.from || 0;
-  from = Number(from);
 
-  // get currently enabled users: represented by status field value true
-  User.find({ status: true })
-    .skip(from)
-    .exec((err, users) => {
-      if (err) {
-        return res.status(400).json({
-          ok: false,
-          err,
-        });
-      }
-      // The count condition must be the same as the find({})
-      User.count({ status: true }, (err, quantity) => {
-        if (err) {
-          return res.status(400).json({
-            ok: false,
-            err,
-          });
-        }
-
-        res.json({
-          ok: true,
-          users,
-          quantity,
-        });
-      });
-    });
-});
 
 // ============================
 //  Get specified user
 // ============================
 app.get(
-  "/user/:id",
-  [verificateToken, verificateAdmin_Role],
+  "/nft/getall",
   function (req, res) {
-    let id = req.params.id;
-    User.findById(id)
-      .where("status")
-      .equals(true)
-      .exec((err, userDB) => {
-        if (err) {
-          return res.status(500).json({
-            ok: false,
-            err,
-          });
-        }
-        if (!userDB) {
-          return res.status(400).json({
-            ok: false,
-            err: {
-              message: "User with ID doesn't exist",
-            },
-          });
-        }
-        res.json({
-          ok: true,
-          user: userDB,
-        });
-      });
+    User.find({}, (err, result) => {
+      if (err) {
+        return res.json({
+          ok: false,
+          err,
+        })
+      }
+
+
+      res.json({
+        ok: true,
+        result
+      })
+    })
   }
 );
 
