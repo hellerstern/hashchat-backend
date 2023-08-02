@@ -36,16 +36,18 @@ app.get(
 // ============================
 app.post("/user", function (req, res) {
   let { nftid } = req.body;
+
+  console.log("nftid: ", nftid);
   //   first verify if user already exists or not
   User.findOne({ nftid: nftid }, (err, foundUserDB) => {
     if (err) {
-      return res.status(500).json({
+      return res.json({
         ok: false,
         err,
       });
     }
     if (foundUserDB) {
-      return res.status(400).json({
+      return res.json({
         ok: false,
         err: {
           message: "User already exists in db",
