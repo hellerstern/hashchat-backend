@@ -69,6 +69,9 @@ app.get('/chat/getall/:nftid', (req, res) => {
       fromid: nftid,
     },
     {
+      to: '0',
+    },
+    {
       toid: nftid,
     }
   ]}, (err, result) => {
